@@ -8,18 +8,46 @@ function expressionCalculator(expr) {
     expr = expr.trim();
     expr = expr.split(" ");
     expr.forEach ((item, index, expr) => {
-        if (item.includes('(') || item.includes(')') || item.includes('+') || item.includes('-') || item.includes('*') || item.includes('/')){
-            expr.splice (index, 1, item.split());
+        if (item == ""){
+            expr.splice (index, 1);
         }
+        if (item.length > 1 ){
+        if (item.includes('(')){
+            if (item.length==2){
+                expr.splice (index, 1,  '(', item.split('(')[1]);
+            }
+            expr.splice (index, 1,  '(','(', item.split('(')[2]);
+        }
+        if (item.includes(')')){
+            if (item.length==2){
+                expr.splice (index, 1, item.split(')')[0], ')');
+            }
+            expr.splice (index, 1, item.split(')')[0], ')',')');
+        }
+        if (item.includes('-')){
+            let arr = item.split('(');
+            expr.splice (index, 1, item.split('-')[0], '-', item.split('-')[1]);
+           }
+        if (item.includes('+')){
+            expr.splice (index, 1, item.split('+')[0], '+', item.split('+')[1]);
+        }
+        if (item.includes('*')){
+            expr.splice (index, 1, item.split('*')[0], '*', item.split('*')[1]);
+        }
+        if (item.includes('/')){
+            expr.splice (index, 1, item.split('/')[0], '/', item.split('/')[1]);
+        }
+       
+    }
     });
     }
     if ((expr.indexOf('(') != -1) && (expr.lastIndexOf(')') != -1)) {
        let a ;
-       a = expressionCalculator(expr.slice(expr.indexOf('(')+1, expr.lastIndexOf(')')-1));
-       expr.splice (expr.indexOf('('), expr.lastIndexOf(')')-expr.indexOf('(')+1, a);
+       a = expressionCalculator(expr.slice(expr.indexOf('(')+1, expr.lastIndexOf(')')));
+       expr.splice (expr.indexOf('('), (expr.lastIndexOf(')')-expr.indexOf('(')+1), a);
     }
-    if (((expr.indexOf('(') != -1) && (expr.lastIndexOf(')') == -1)) || ((expr.indexOf('(') == -1) && (expr.lastIndexOf(')') != -1))) {
-        throw "Brackets must be paired";
+    if (((expr.indexOf('(') != -1) && (expr.indexOf(')') == -1)) || ((expr.indexOf('(') == -1) && (expr.indexOf(')') != -1))) {
+        throw "ExpressionError: Brackets must be paired";
     }
     if ((expr.indexOf('(') == -1) && (expr.lastIndexOf(')') == -1)){
         for (let i=0; i<expr.length; i++) {
